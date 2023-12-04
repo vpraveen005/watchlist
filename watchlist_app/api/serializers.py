@@ -1,23 +1,38 @@
 from rest_framework import serializers
-from watchlist_app.models import WatchList, StreamPlatform
+from watchlist_app.models import WatchList, StreamPlatform, Review
 
 
-class StreamPlatformSerializer(serializers.ModelSerializer):
-
+class ReviewSerializer(serializers.ModelSerializer):
+    review_user = serializers.StringRelatedField(read_only=True)
     class Meta:
-        model = StreamPlatform
-        fields = '__all__'
-
-
+        model = Review
+        exclude =['watchlist']
+        # fields = '__all__'
 class WatchListSerializer(serializers.ModelSerializer):
 
     # len_name = serializers.SerializerMethodField()
+    reviews = ReviewSerializer(many=True, read_only=True)
 
     class Meta:
         model = WatchList
         fields = '__all__'
         # fields = ['name', 'description']
         # exclude = ['active']
+
+class StreamPlatformSerializer(serializers.ModelSerializer):
+    watchlist = WatchListSerializer(many=True, read_only=True)
+    # watchlist= serializers.StringRelatedField(many=True)
+    # watchlist = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    # watchlist = serializers.HyperlinkedRelatedField(
+    #     many=True,
+    #     read_only=True,
+    #     view_name='movie-details'
+    # )
+
+    class Meta:
+        model = StreamPlatform
+        fields = '__all__'
+
 
 
 # def name_length(value):
