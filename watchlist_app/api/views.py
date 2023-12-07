@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 from rest_framework import generics
 from rest_framework import mixins
 from rest_framework import viewsets
+from rest_framework import filters
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.throttling import UserRateThrottle, AnonRateThrottle, ScopedRateThrottle
@@ -16,7 +17,7 @@ from watchlist_app.api.permissions import IsAdminOrReadOnly, IsReviewUserOrReadO
 from watchlist_app.models import WatchList, StreamPlatform, Review
 from watchlist_app.api.serializers import WatchListSerializer, StreamPlatformSerializer, ReviewSerializer
 from watchlist_app.api.throttling import ReviewCreateThrottle, ReviewListThrottle
-
+from watchlist_app.api.pagination import WatchListPagination
 
 class UserReview(generics.ListAPIView):
     # queryset = Review.objects.all()
@@ -61,7 +62,7 @@ class ReviewCreate(generics.CreateAPIView):
 class ReviewList(generics.ListAPIView):
     # queryset = Review.objects.all()
     serializer_class = ReviewSerializer
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
     throttle_classes = [ReviewListThrottle, AnonRateThrottle]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['review_user__username', 'active']
@@ -160,6 +161,21 @@ class StreamPlatformDetailAV(APIView):
         platform = StreamPlatform.objects.get(pk=pk)
         platform.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class WatchListGV(generics.ListAPIView):
+    queryset = WatchList.objects.all()
+    serializer_class = WatchListSerializer
+    pagination_class = WatchListPagination
+
+    # filter_backends = [DjangoFilterBackend]
+    # filterset_fields = ['title', 'platform__name']
+
+    # filter_backends = [filters.SearchFilter]
+    # search_fields = ['title', 'platform__name']
+
+    filter_backends = [filters.OrderingFilter]
+    ordering_fields = ['avg_rating']
 
 class WatchListAV(APIView):
     permission_classes = [IsAdminOrReadOnly]

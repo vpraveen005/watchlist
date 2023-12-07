@@ -11,6 +11,7 @@ urlpatterns = [
 
     path('list/', views.WatchListAV.as_view(), name='movie-list'),
     path('<int:pk>/', views.WatchDetailAV.as_view(), name='movie-details'),
+    path('list2/', views.WatchListGV.as_view(), name='watch-list'),
 
     path('', include(router.urls)),
 
