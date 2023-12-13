@@ -127,7 +127,7 @@ REST_FRAMEWORK = {
     ],
 
     # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    # 'PAGE_SIZE': 5,
+    # 'PAGE_SIZE': 50,
 
     # 'DEFAULT_THROTTLE_CLASSES': [
     #     'rest_framework.throttling.AnonRateThrottle',
@@ -141,6 +141,10 @@ REST_FRAMEWORK = {
         'review-list': '100/day',
         'review-detail': '200/day',
     },
+
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+    ),
 }
 
 # SIMPLE_JWT = {
